@@ -53,6 +53,7 @@ public:
 
 	Bouncer bouncer1;
 	Bouncer bouncer2;
+	Bouncer bouncer3;
 
 	Bouncer voltorb_bouncer1;
 	Bouncer voltorb_bouncer2;

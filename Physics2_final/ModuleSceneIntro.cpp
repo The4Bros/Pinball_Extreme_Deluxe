@@ -24,13 +24,13 @@ bool ModuleSceneIntro::Start()
 	//App->audio->PlayMusic("pinball/Rhinoceros2.ogg", 0.0f);
 
 	// Graphics
-	graphics = App->textures->Load("pinball/pinball.png");
+	graphics = App->textures->Load("pinball/field_empty_b.png");
 
-	bouncer1.texture = App->textures->Load("pinball/left_bouncer_hit.png");
-	bouncer2.texture = App->textures->Load("pinball/right_bouncer_hit.png");
+	bouncer1.texture = App->textures->Load("pinball/Bumper_izq.png");
+	bouncer2.texture = App->textures->Load("pinball/Bumper_der.png");
 
 	voltorb_bouncer1.texture = voltorb_bouncer2.texture = voltorb_bouncer3.texture =
-		App->textures->Load("pinball/bouncer_hit.png");
+		App->textures->Load("pinball/electrode_hit.png");
 
 	// FX's
 	bouncer1.fx = bouncer2.fx = App->audio->LoadFx("pinball/ding_short.wav");
@@ -40,261 +40,239 @@ bool ModuleSceneIntro::Start()
 	player_restart_fx = App->audio->LoadFx("pinball/long_bonus2.wav");
 
 	// Pivot 0, 0
-	int pinball[134] = {
-		584, 1079,
-		584, 221,
-		578, 187,
-		566, 149,
-		545, 106,
-		523, 77,
-		496, 51,
-		463, 31,
-		421, 12,
-		375, 4,
-		219, 4,
-		189, 15,
-		172, 29,
-		159, 46,
-		150, 68,
-		147, 90,
-		148, 121,
-		155, 152,
-		159, 168,
-		180, 209,
-		179, 216,
-		170, 216,
-		147, 172,
-		141, 152,
-		137, 121,
-		134, 90,
-		131, 25,
-		124, 14,
-		113, 8,
-		97, 11,
-		88, 24,
-		89, 97,
-		92, 153,
-		96, 195,
-		99, 216,
-		116, 270,
-		115, 278,
-		106, 275,
-		89, 215,
-		85, 192,
-		78, 64,
-		75, 46,
-		65, 36,
-		40, 29,
-		16, 36,
-		3, 58,
-		3, 203,
-		8, 250,
-		15, 293,
-		21, 321,
-		75, 492,
-		75, 504,
-		33, 607,
-		32, 670,
-		0, 708,
-		0, 916,
-		171, 1022,
-		171, 1076,
-		326, 1076,
-		326, 1023,
-		499, 915,
-		499, 713,
-		451, 652,
-		451, 645,
-		536, 455,
-		543, 455,
-		543, 1079
+	int pinball[114] = {
+		148, 749,
+		100, 723,
+		54, 692,
+		18, 673,
+		14, 562,
+		24, 532,
+		58, 517,
+		63, 471,
+		71, 451,
+		60, 433,
+		32, 336,
+		23, 248,
+		24, 221,
+		25, 158,
+		40, 117,
+		70, 78,
+		121, 40,
+		170, 24,
+		219, 19,
+		272, 20,
+		322, 29,
+		379, 63,
+		429, 113,
+		457, 154,
+		472, 251,
+		471, 750,
+		429, 750,
+		425, 226,
+		414, 178,
+		395, 140,
+		351, 101,
+		312, 80,
+		265, 66,
+		216, 60,
+		158, 71,
+		104, 111,
+		154, 93,
+		193, 80,
+		243, 84,
+		283, 87,
+		328, 105,
+		383, 161,
+		401, 228,
+		396, 323,
+		372, 421,
+		353, 453,
+		362, 464,
+		366, 468,
+		371, 518,
+		397, 521,
+		412, 542,
+		410, 671,
+		374, 689,
+		369, 690,
+		280, 749,
+		273, 818,
+		156, 823
 	};
 
-	App->physics->AddEdge({0, 0, 585, 1024}, pinball, 134);
+	App->physics->AddEdge({0, 0, 517, 751}, pinball, 114);
 
 	// Pivot 0, 0
-	int pinball2[14] = {
-		521, 195,
-		507, 151,
-		478, 110,
-		442, 76,
-		409, 59,
-		382, 51,
-		382, 103
+	int pinball2[26] = {
+		157, 349,
+		142, 343,
+		129, 321,
+		118, 288,
+		117, 245,
+		121, 204,
+		130, 181,
+		134, 202,
+		124, 227,
+		135, 265,
+		155, 286,
+		174, 312,
+		177, 326
 	};
 
-	App->physics->AddEdge({0, 0, 585, 1024}, pinball2, 14);
+	App->physics->AddEdge({0, 0, 517, 751}, pinball2, 26);
+	
+	// Pivot 0, 0
+	int pinball3[26] = {
+		77, 231,
+		66, 255,
+		64, 308,
+		65, 325,
+		68, 340,
+		73, 355,
+		85, 383,
+		104, 409,
+		119, 395,
+		119, 386,
+		91, 344,
+		76, 284,
+		81, 236
+	};
+
+	App->physics->AddEdge({0, 0, 0, 0}, pinball3, 26);
+	
+	// Pivot 0, 0
+	int pinball4[50] = {
+		280, 315,
+		284, 291,
+		280, 271,
+		288, 254,
+		295, 250,
+		293, 228,
+		297, 225,
+		297, 131,
+		321, 151,
+		347, 180,
+		360, 213,
+		365, 220,
+		364, 310,
+		354, 355,
+		338, 393,
+		325, 408,
+		309, 394,
+		331, 361,
+		340, 331,
+		354, 273,
+		352, 246,
+		315, 247,
+		308, 297,
+		293, 328,
+		283, 321
+	};
+
+	App->physics->AddEdge({0, 0, 0, 0}, pinball4, 50);
+	
+	// Pivot 0, 0
+	int pinball5[12] = {
+		51, 559,
+		53, 645,
+		140, 698,
+		136, 685,
+		58, 631,
+		57, 558
+	};
+
+	App->physics->AddEdge({0, 0, 0, 0}, pinball5, 12);
+	
+	// Pivot 0, 0
+	int pinball6[12] = {
+		292, 688,
+		369, 630,
+		370, 564,
+		377, 563,
+		374, 643,
+		294, 701
+	};
+
+	App->physics->AddEdge({0, 0, 0, 0}, pinball6, 12);
+	
+	// Pivot 0, 0
+	int pinball7[10] = {
+		100, 565,
+		131, 628,
+		128, 636,
+		96, 615,
+		95, 566
+	};
+
+	App->physics->AddEdge({0, 0, 0, 0}, pinball7, 10);
 
 	// Pivot 0, 0
-	int pinball3[8] = {
-		248, 54,
-		257, 54,
-		257, 105,
-		248, 105
+	int pinball8[8] = {
+		330, 610,
+		331, 570,
+		299, 630,
+		324, 616
+	};
+	
+	App->physics->AddEdge({0, 0, 0, 0}, pinball8,8);
+	
+	// Pivot 0, 0
+	int pinball9[8] = {
+		177, 130,
+		178, 170,
+		189, 166,
+		191, 128
 	};
 
-	App->physics->AddEdge({0, 0, 0, 0}, pinball3, 8);
+	App->physics->AddEdge({0, 0, 0, 0}, pinball9, 8);
 
 	// Pivot 0, 0
-	int pinball4[8] = {
-		294, 48,
-		303, 48,
-		303, 97,
-		294, 97
+	int pinball10[8] = {
+		237, 118,
+		237, 146,
+		249, 148,
+		250, 117
 	};
 
-	App->physics->AddEdge({0, 0, 0, 0}, pinball4, 8);
-
-	// Pivot 0, 0
-	int pinball5[8] = {
-		335, 48,
-		344, 48,
-		344, 97,
-		336, 97
-	};
-
-	App->physics->AddEdge({0, 0, 0, 0}, pinball5, 8);
-
-	// Pivot 0, 0
-	int pinball6[68] = {
-		36, 70,
-		45, 70,
-		47, 153,
-		50, 216,
-		65, 276,
-		82, 322,
-		299, 429,
-		296, 445,
-		301, 460,
-		369, 477,
-		369, 489,
-		362, 520,
-		341, 584,
-		333, 585,
-		332, 576,
-		352, 523,
-		352, 508,
-		341, 497,
-		328, 490,
-		310, 490,
-		303, 499,
-		292, 543,
-		208, 501,
-		203, 493,
-		196, 445,
-		184, 434,
-		168, 427,
-		160, 424,
-		148, 424,
-		142, 430,
-		150, 481,
-		128, 476,
-		51, 261,
-		41, 211
-	};
-
-	App->physics->AddEdge({0, 0, 0, 0}, pinball6, 68);
-
-	// Pivot 0, 0
-	int pinball7[26] = {
-		382, 608,
-		388, 612,
-		497, 432,
-		514, 369,
-		520, 333,
-		520, 287,
-		513, 287,
-		466, 382,
-		487, 400,
-		487, 415,
-		442, 467,
-		427, 466,
-		408, 544
-	};
-
-	App->physics->AddEdge({0, 0, 0, 0}, pinball7, 26);
-
-	// Pivot 0, 0
-	int pinball8[12] = {
-		33, 750,
-		43, 750,
-		43, 849,
-		138, 908,
-		134, 917,
-		33, 855
-	};
-
-	App->physics->AddEdge({0, 0, 0, 0}, pinball8, 12);
-
-	// Pivot 0, 0
-	int pinball9[12] = {
-		464, 750,
-		457, 750,
-		457, 850,
-		360, 909,
-		364, 917,
-		464, 856
-	};
-
-	App->physics->AddEdge({0, 0, 0, 0}, pinball9, 12);
-
-	// Pivot 0, 0
-	int pinball10[10] = {
-		80, 725,
-		80, 824,
-		136, 856,
-		145, 849,
-		92, 723
-	};
-
-	App->physics->AddEdge({0, 0, 0, 0}, pinball10, 10);
-
-	// Pivot 0, 0
-	int pinball11[10] = {
-		415, 725,
-		415, 824,
-		360, 857,
-		353, 849,
-		405, 725
-	};
-
-	App->physics->AddEdge({0, 0, 0, 0}, pinball11, 10);
+	App->physics->AddEdge({0, 0, 0, 0}, pinball10, 8);
 
 	// Other elements ------------------------------------------------
 
 	// Small bouncy ball bottom center under flippers
-	App->physics->AddBody(248, 1024, 24, b_static, 1.0f, 0.8f);
+	App->physics->AddBody(216, 745,5, b_static, 1.0f, 0.8f);
 
 	// Two big bouncers on top
-	bouncer1.body = App->physics->AddBody(256, 175, 50, b_static, 1.0f, 1.5f);
-	bouncer1.body->listener = this;
+	voltorb_bouncer1.body = App->physics->AddBody(232, 286, 42, b_static, 1.0f, 1.5f);
+	voltorb_bouncer1.body->listener = this;
 
-	bouncer2.body = App->physics->AddBody(343, 169, 50, b_static, 1.0f, 1.5f);
-	bouncer2.body->listener = this;
+	voltorb_bouncer2.body = App->physics->AddBody(178, 235, 42, b_static, 1.0f, 1.5f);
+	voltorb_bouncer2.body->listener = this;
 
+	voltorb_bouncer3.body = App->physics->AddBody(247, 209, 42, b_static, 1.0f, 1.5f);
+	voltorb_bouncer3.body->listener = this;
 	// Bouncers on the sides
 	
 	// Pivot 0, 0
 	int b1[8] = {
-		90, 733,
-		101, 728,
-		147, 838,
-		133, 843
+		99, 568,
+		125, 622,
+		135, 616,
+		108, 563
 	};
 
-	//side_bouncer1.body = App->physics->AddBody({0, 0, 585, 1024}, b1, 8, b_static, 1.0f, 1.0f, false);
-	//side_bouncer1.body->listener = this;
+	bouncer1.body = App->physics->AddBody({ 0, 0, 517, 751 }, b1, 8, b_static, 1.0f, 1.0f, false);
+	bouncer1.body->listener = this;
 
 	// Pivot 0, 0
 	int b2[8] = {
-		409, 732,
-		398, 726,
-		350, 835,
-		365, 841
+		289, 625,
+		299, 629,
+		329, 570,
+		317, 562
 	};
 
-	//side_bouncer2.body = App->physics->AddBody({0, 0, 585, 1024}, b2, 8, b_static, 1.0f, 1.0f, false);
-	//side_bouncer2.body->listener = this;
+	bouncer2.body = App->physics->AddBody({ 0, 0, 517, 751 }, b2, 8, b_static, 1.0f, 1.0f, false);
+	bouncer2.body->listener = this;
 
 	// Sensors (blue lights on the floor)
 	tex_light = App->textures->Load("pinball/sensor_tiny.png");
@@ -338,7 +316,7 @@ update_status ModuleSceneIntro::Update()
 	if(bouncer1.hit_timer > 0)
 	{
 		if(SDL_TICKS_PASSED(SDL_GetTicks(), bouncer1.hit_timer) == false)
-			App->renderer->Blit(bouncer1.texture, 237, 155);
+			App->renderer->Blit(bouncer1.texture, 92, 563);
 		else
 		{
 			bouncer1.hit_timer = 0;
@@ -349,7 +327,7 @@ update_status ModuleSceneIntro::Update()
 	if(bouncer2.hit_timer > 0)
 	{
 		if(SDL_TICKS_PASSED(SDL_GetTicks(), bouncer2.hit_timer) == false)
-			App->renderer->Blit(bouncer2.texture, 323, 150);
+			App->renderer->Blit(bouncer2.texture, 292, 563);
 		else
 		{
 			bouncer2.hit_timer = 0;
@@ -357,18 +335,18 @@ update_status ModuleSceneIntro::Update()
 		}
 	}
 
-	/*
+	
 	if (voltorb_bouncer1.hit_timer > 0)
 	{
-		if(SDL_TICKS_PASSED(SDL_GetTicks(), side_bouncer1.hit_timer) == false)
-			App->renderer->Blit(side_bouncer1.texture, 84, 729);
+		if (SDL_TICKS_PASSED(SDL_GetTicks(), voltorb_bouncer1.hit_timer) == false)
+			App->renderer->Blit(voltorb_bouncer1.texture, 232, 286);
 		else
 		{
-			side_bouncer1.hit_timer = 0;
+			voltorb_bouncer1.hit_timer = 0;
 			score += 10;
 		}
 	}
-	*/
+
 	
 
 
