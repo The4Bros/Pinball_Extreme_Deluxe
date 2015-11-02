@@ -25,12 +25,16 @@ bool ModuleSceneIntro::Start()
 
 	// Graphics
 	graphics = App->textures->Load("pinball/pinball.png");
-	bouncer1.texture = bouncer2.texture = App->textures->Load("pinball/bouncer_hit.png");
-	side_bouncer1.texture = App->textures->Load("pinball/left_bouncer_hit.png");
-	side_bouncer2.texture = App->textures->Load("pinball/right_bouncer_hit.png");
 
+	bouncer1.texture = App->textures->Load("pinball/left_bouncer_hit.png");
+	bouncer2.texture = App->textures->Load("pinball/right_bouncer_hit.png");
+
+	voltorb_bouncer1.texture = voltorb_bouncer2.texture = voltorb_bouncer3.texture =
+		App->textures->Load("pinball/bouncer_hit.png");
+
+	// FX's
 	bouncer1.fx = bouncer2.fx = App->audio->LoadFx("pinball/ding_short.wav");
-	side_bouncer1.fx = side_bouncer2.fx = App->audio->LoadFx("pinball/ring.wav");
+	voltorb_bouncer1.fx = voltorb_bouncer2.fx = voltorb_bouncer3.fx = App->audio->LoadFx("pinball/ring.wav");
 
 	player_lose_fx = App->audio->LoadFx("pinball/long_bonus.wav");
 	player_restart_fx = App->audio->LoadFx("pinball/long_bonus2.wav");
@@ -278,8 +282,8 @@ bool ModuleSceneIntro::Start()
 		133, 843
 	};
 
-	side_bouncer1.body = App->physics->AddBody({0, 0, 585, 1024}, b1, 8, b_static, 1.0f, 1.0f, false);
-	side_bouncer1.body->listener = this;
+	//side_bouncer1.body = App->physics->AddBody({0, 0, 585, 1024}, b1, 8, b_static, 1.0f, 1.0f, false);
+	//side_bouncer1.body->listener = this;
 
 	// Pivot 0, 0
 	int b2[8] = {
@@ -289,54 +293,23 @@ bool ModuleSceneIntro::Start()
 		365, 841
 	};
 
-	side_bouncer2.body = App->physics->AddBody({0, 0, 585, 1024}, b2, 8, b_static, 1.0f, 1.0f, false);
-	side_bouncer2.body->listener = this;
+	//side_bouncer2.body = App->physics->AddBody({0, 0, 585, 1024}, b2, 8, b_static, 1.0f, 1.0f, false);
+	//side_bouncer2.body->listener = this;
 
 	// Sensors (blue lights on the floor)
-	tex_light_tiny = App->textures->Load("pinball/sensor_tiny.png");
-	tex_light_medium = App->textures->Load("pinball/sensor_med.png");
-	tex_light_big = App->textures->Load("pinball/sensor_big.png");
+	tex_light = App->textures->Load("pinball/sensor_tiny.png");
+	fx_light = App->audio->LoadFx("pinball/bonus2.wav");
 
-	fx_light_tiny = App->audio->LoadFx("pinball/bonus2.wav");
-	fx_light_medium = App->audio->LoadFx("pinball/bonus2.wav");
-	fx_light_big = App->audio->LoadFx("pinball/bonus3.wav");
-
+	/*
 	lights.PushBack(Light(this, 422, 140, lightTypes::tiny));
 	lights.PushBack(Light(this, 451, 159, lightTypes::tiny));
 	lights.PushBack(Light(this, 481, 179, lightTypes::tiny));
 
 	lights.PushBack(Light(this, 220, 514, lightTypes::tiny));
 	lights.PushBack(Light(this, 251, 530, lightTypes::tiny));
-
 	lights.PushBack(Light(this, 73, 525, lightTypes::tiny));
 	lights.PushBack(Light(this, 61, 556, lightTypes::tiny));
-	lights.PushBack(Light(this, 49, 587, lightTypes::tiny));
-
-	lights.PushBack(Light(this, 73, 245, lightTypes::medium));
-	lights.PushBack(Light(this, 64, 207, lightTypes::medium));
-	lights.PushBack(Light(this, 61, 170, lightTypes::medium));
-	lights.PushBack(Light(this, 58, 134, lightTypes::medium));
-	lights.PushBack(Light(this, 57, 99, lightTypes::medium));
-	lights.PushBack(Light(this, 55, 63, lightTypes::medium));
-	lights.PushBack(Light(this, 13, 63, lightTypes::medium));
-	lights.PushBack(Light(this, 13, 100, lightTypes::medium));
-	lights.PushBack(Light(this, 14, 136, lightTypes::medium));
-	lights.PushBack(Light(this, 15, 174, lightTypes::medium));
-	lights.PushBack(Light(this, 19, 214, lightTypes::medium));
-	lights.PushBack(Light(this, 25, 253, lightTypes::medium));
-	lights.PushBack(Light(this, 34, 291, lightTypes::medium));
-	lights.PushBack(Light(this, 46, 333, lightTypes::medium));
-	lights.PushBack(Light(this, 61, 373, lightTypes::medium));
-
-	lights.PushBack(Light(this, 266, 63, lightTypes::big));
-	lights.PushBack(Light(this, 309, 58, lightTypes::big));
-	lights.PushBack(Light(this, 352, 59, lightTypes::big));
-
-	lights.PushBack(Light(this, 426, 32, lightTypes::big));
-	lights.PushBack(Light(this, 385, 477, lightTypes::big));
-
-	lights.PushBack(Light(this, 6, 870, lightTypes::big));
-	lights.PushBack(Light(this, 472, 870, lightTypes::big));
+	*/
 	
 	// Sensor for player losing (under flippers)
 
@@ -384,7 +357,8 @@ update_status ModuleSceneIntro::Update()
 		}
 	}
 
-	if(side_bouncer1.hit_timer > 0)
+	/*
+	if (voltorb_bouncer1.hit_timer > 0)
 	{
 		if(SDL_TICKS_PASSED(SDL_GetTicks(), side_bouncer1.hit_timer) == false)
 			App->renderer->Blit(side_bouncer1.texture, 84, 729);
@@ -394,17 +368,8 @@ update_status ModuleSceneIntro::Update()
 			score += 10;
 		}
 	}
-
-	if(side_bouncer2.hit_timer > 0)
-	{
-		if(SDL_TICKS_PASSED(SDL_GetTicks(), side_bouncer2.hit_timer) == false)
-			App->renderer->Blit(side_bouncer2.texture, 357, 729);
-		else
-		{
-			side_bouncer2.hit_timer = 0;
-			score += 10;
-		}
-	}
+	*/
+	
 
 
 	for(uint i = 0; i < lights.Count(); ++i)
@@ -440,17 +405,17 @@ void ModuleSceneIntro::OnCollision(PhysBody* body1, PhysBody* body2)
 		return;
 	}
 
-	if(side_bouncer1.body == body1)
+	if (voltorb_bouncer1.body == body1)
 	{
-		side_bouncer1.hit_timer = SDL_GetTicks() + BOUNCER_TIME;
-		App->audio->PlayFx(side_bouncer1.fx);
+		voltorb_bouncer1.hit_timer = SDL_GetTicks() + BOUNCER_TIME;
+		App->audio->PlayFx(voltorb_bouncer1.fx);
 		return;
 	}
 
-	if(side_bouncer2.body == body1)
+	if (voltorb_bouncer2.body == body1)
 	{
-		side_bouncer2.hit_timer = SDL_GetTicks() + BOUNCER_TIME;
-		App->audio->PlayFx(side_bouncer2.fx);
+		voltorb_bouncer2.hit_timer = SDL_GetTicks() + BOUNCER_TIME;
+		App->audio->PlayFx(voltorb_bouncer1.fx);
 		return;
 	}
 
@@ -462,18 +427,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* body1, PhysBody* body2)
 			{
 				lights[i].on = true;
 				App->audio->PlayFx(lights[i].fx);
-				switch(lights[i].type)
-				{
-					case tiny:
-					score += 50;
-					break;
-					case medium:
-					score += 100;
-					break;
-					case big:
-					score += 300;
-					break;
-				}
+				score += 100;
 			}
 			return;
 		}
@@ -502,32 +456,9 @@ void ModuleSceneIntro::OnCollision(PhysBody* body1, PhysBody* body2)
 	}
 }
 
-Light::Light(ModuleSceneIntro* scene, int x, int y, lightTypes type)
+Light::Light(ModuleSceneIntro* scene, int x, int y) :x(x), y(y)
 {
-	this->type = type;
-	this->x = x;
-	this->y = y;
-
-	int radius;
-
-	switch(type)
-	{
-		case tiny:
-			radius = 6;
-			texture = scene->tex_light_tiny;
-			fx = scene->fx_light_tiny;
-			break;
-		case medium:
-			radius = 7;
-			texture = scene->tex_light_medium;
-			fx = scene->fx_light_medium;
-			break;
-		case big:
-			radius = 11;
-			texture = scene->tex_light_big;
-			fx = scene->fx_light_big;
-			break;
-	}
+	int radius = 6;
 
 	body = scene->App->physics->AddBody(x + radius, y + radius, radius * 2, b_static, 1.0f, 1.0f, false, true);
 	body->listener = scene;

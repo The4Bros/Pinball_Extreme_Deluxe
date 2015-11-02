@@ -37,10 +37,5 @@ public:
 	PhysBody* flipper2_wheel;
 	PhysBody* spring_wheel;
 
-	Object flipper_up1;
-	Object flipper_up2;
-	PhysBody* flipper_up1_wheel;
-	PhysBody* flipper_up2_wheel;
-
 	PhysBody* sensor1;
 };

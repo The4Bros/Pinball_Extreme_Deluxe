@@ -17,13 +17,6 @@ struct Bouncer
 	uint fx;
 };
 
-enum lightTypes
-{
-	tiny,
-	medium,
-	big
-};
-
 class ModuleSceneIntro;
 
 struct Light
@@ -31,14 +24,14 @@ struct Light
 	Light() : body(NULL), texture(NULL), on(false), fx(0)
 	{}
 
-	Light(ModuleSceneIntro* physics, int x, int y, lightTypes type);
+	Light(ModuleSceneIntro* physics, int x, int y);
 
-	lightTypes type;
 	PhysBody* body;
 	SDL_Texture* texture;
 	bool on;
 	uint fx;
 	int x, y;
+
 };
 
 class ModuleSceneIntro : public Module
@@ -61,16 +54,15 @@ public:
 	Bouncer bouncer1;
 	Bouncer bouncer2;
 
-	Bouncer side_bouncer1;
-	Bouncer side_bouncer2;
+	Bouncer voltorb_bouncer1;
+	Bouncer voltorb_bouncer2;
+	Bouncer voltorb_bouncer3;
 
-	SDL_Texture* tex_light_tiny;
-	SDL_Texture* tex_light_medium;
-	SDL_Texture* tex_light_big;
-	
-	uint fx_light_tiny;
-	uint fx_light_medium;
-	uint fx_light_big;
+	Bouncer diglet_bouncer1;
+	Bouncer diglet_bouncer2;
+
+	SDL_Texture* tex_light;
+	uint fx_light;
 
 	p2DynArray<Light> lights;
 
