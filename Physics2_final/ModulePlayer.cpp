@@ -23,7 +23,7 @@ bool ModulePlayer::Start()
 	spring.graphic = App->textures->Load("pinball/spring.png");
 	spring.fx = App->audio->LoadFx("pinball/spring2.wav");
 
-	ball.body = App->physics->AddBody(563, 582, 28, b_dynamic, 1.0f, 0.3f, true);
+	ball.body = App->physics->AddBody(563, 582, 28, b_dynamic, 1.0f, 0.3f, true);/*___________*/
 	ball.fx = App->audio->LoadFx("pinball/ball_bounce.wav");
 	ball.body->listener = this;
 	
@@ -39,7 +39,7 @@ bool ModulePlayer::Start()
 		5, 30
 	};
 
-	flipper1.body = App->physics->AddBody({132, 918, 0, 0}, f1, 16, b_dynamic);
+	flipper1.body = App->physics->AddBody({132, 918, 0, 0}, f1, 16, b_dynamic);/*___________*/
 	flipper1_wheel = App->physics->AddBody(132+14, 918+17, 10, b_static);
 	App->physics->CreateRevoluteJoint(flipper1.body, flipper1_wheel, 14, 17, 0, 0, 30, -30);
 
@@ -55,12 +55,12 @@ bool ModulePlayer::Start()
 		91, 5
 	};
 	
-	flipper2.body = App->physics->AddBody({273, 920, 0, 0}, f2, 16, b_dynamic);
+	flipper2.body = App->physics->AddBody({273, 920, 0, 0}, f2, 16, b_dynamic);/*___________*/
 	flipper2_wheel = App->physics->AddBody(273 + 80, 920 + 17, 10, b_static);
 	App->physics->CreateRevoluteJoint(flipper2.body, flipper2_wheel, 80, 17, 0, 0, 30, -30);
 
 	// Others
-	spring.body = App->physics->AddBody({565, 943, 45, 47}, b_dynamic);
+	spring.body = App->physics->AddBody({565, 943, 45, 47}, b_dynamic);/*___________*/
 	spring_wheel = App->physics->AddBody(535, 907, 10, b_static);
 	App->physics->CreateLineJoint(spring.body, spring_wheel, 0, 0, 0, 0, 20.0f, 1.0f);
 	
