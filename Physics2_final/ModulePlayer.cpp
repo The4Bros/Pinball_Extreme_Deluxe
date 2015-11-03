@@ -59,8 +59,8 @@ bool ModulePlayer::Start()
 	App->physics->CreateRevoluteJoint(flipper2.body, flipper2_wheel, 55, 14, 0, 0, 30, -30);
 
 	// Others
-	spring.body = App->physics->AddBody({565, 943, 45, 47}, b_dynamic);/*___________*/
-	spring_wheel = App->physics->AddBody(535, 907, 10, b_static);
+	spring.body = App->physics->AddBody({435, 710,37, 11}, b_dynamic);/*___________*/
+	spring_wheel = App->physics->AddBody(480, 700, 10, b_static);
 	App->physics->CreateLineJoint(spring.body, spring_wheel, 0, 0, 0, 0, 20.0f, 1.0f);
 	
 	return true;
