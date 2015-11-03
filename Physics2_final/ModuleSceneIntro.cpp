@@ -34,7 +34,8 @@ bool ModuleSceneIntro::Start()
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
 	// Music
-	//App->audio->PlayMusic("pinball/Rhinoceros2.ogg", 0.0f);
+	App->audio->PlayMusic("game/pinball/Background.wav", 0.0f);
+	App->audio->ChangeVolume(5);
 
 	// Graphics
 	graphics = App->textures->Load("game/pinball/field_empty_b.png");
@@ -56,8 +57,8 @@ bool ModuleSceneIntro::Start()
 
 	fx_light = App->audio->LoadFx("game/pinball/bonus2.wav");
 
-	player_lose_fx = App->audio->LoadFx("game/pinball/long_bonus.wav");
-	player_restart_fx = App->audio->LoadFx("game/pinball/long_bonus2.wav");
+	player_lose_fx = App->audio->LoadFx("game/pinball/Game_Over.wav");
+	player_restart_fx = App->audio->LoadFx("game/pinball/restart.wav");
 
 	// Pivot 0, 0
 	int pinball[114] = {
@@ -259,7 +260,7 @@ bool ModuleSceneIntro::Start()
 	// Other elements ------------------------------------------------
 
 	// Small bouncy ball bottom center under flippers
-	App->physics->AddBody(216, 745,5, b_static, 1.0f, 0.8f);
+	//App->physics->AddBody(216, 745,5, b_static, 1.0f, 0.8f);
 
 	// Bouncers on the sides
 	// Pivot 0, 0
@@ -280,13 +281,13 @@ bool ModuleSceneIntro::Start()
 
 
 	// VOLTORBS
-	voltorbs[0].body = App->physics->AddBody(232, 286, 42, b_static, 1.0f, 1.5f);
+	voltorbs[0].body = App->physics->AddBody(232, 286, 40, b_static, 1.0f, 1.5f);
 	voltorbs[0].body->GetPosition(voltorbs[0].x, voltorbs[0].y);
 
-	voltorbs[1].body = App->physics->AddBody(178, 235, 42, b_static, 1.0f, 1.5f);
+	voltorbs[1].body = App->physics->AddBody(178, 235, 40, b_static, 1.0f, 1.5f);
 	voltorbs[1].body->GetPosition(voltorbs[1].x, voltorbs[1].y);
 
-	voltorbs[2].body = App->physics->AddBody(247, 209, 42, b_static, 1.0f, 1.5f);
+	voltorbs[2].body = App->physics->AddBody(247, 209, 40, b_static, 1.0f, 1.5f);
 	voltorbs[2].body->GetPosition(voltorbs[2].x, voltorbs[2].y);
 
 
@@ -314,15 +315,41 @@ bool ModuleSceneIntro::Start()
 	int light_radius = 6;
 
 	lights_up[0].on = false;
-	lights_up[0].body = App->physics->AddBody(0 + light_radius, 0 + light_radius, light_radius * 2, b_static, 1.0f, 1.0f, false, true);
+	lights_up[0].body = App->physics->AddBody(29 + light_radius, 557 + light_radius, light_radius * 2, b_static, 1.0f, 1.0f, false, true);
 	lights_up[0].body->GetPosition(lights_up[0].x, lights_up[0].y);
+
+	lights_up[1].on = false;
+	lights_up[1].body = App->physics->AddBody(72 + light_radius, 557 + light_radius, light_radius * 2, b_static, 1.0f, 1.0f, false, true);
+	lights_up[1].body->GetPosition(lights_up[1].x, lights_up[1].y);
+
+	lights_up[2].on = false;
+	lights_up[2].body = App->physics->AddBody(345 + light_radius, 557 + light_radius, light_radius * 2, b_static, 1.0f, 1.0f, false, true);
+	lights_up[2].body->GetPosition(lights_up[2].x, lights_up[2].y);
+
+	lights_up[3].on = false;
+	lights_up[3].body = App->physics->AddBody(389 + light_radius, 557 + light_radius, light_radius * 2, b_static, 1.0f, 1.0f, false, true);
+	lights_up[3].body->GetPosition(lights_up[3].x, lights_up[3].y);
+
+	lights_up[4].on = false;
+	lights_up[4].body = App->physics->AddBody(149 + light_radius, 157 + light_radius, light_radius * 2, b_static, 1.0f, 1.0f, false, true);
+	lights_up[4].body->GetPosition(lights_up[4].x, lights_up[4].y);
+
+	lights_up[5].on = false;
+	lights_up[5].body = App->physics->AddBody(211 + light_radius, 131 + light_radius, light_radius * 2, b_static, 1.0f, 1.0f, false, true);
+	lights_up[5].body->GetPosition(lights_up[5].x, lights_up[5].y);
+
+	lights_up[6].on = false;
+	lights_up[6].body = App->physics->AddBody(270 + light_radius, 137 + light_radius, light_radius * 2, b_static, 1.0f, 1.0f, false, true);
+	lights_up[6].body->GetPosition(lights_up[6].x, lights_up[6].y);
+
+
 
 
 	// LIGHTS DOWN
 	
 	
 	// Sensor for player losing (under flippers)
-	player_lose = App->physics->AddBody({245, 1080, 200, 50}, b_static, 1.0f, 0.0f, false, true);
+	player_lose = App->physics->AddBody({245, 780, 200, 50}, b_static, 1.0f, 0.0f, false, true);
 	player_lose->listener = this;
 
 	return ret;
@@ -564,9 +591,10 @@ void ModuleSceneIntro::OnCollision(PhysBody* body1, PhysBody* body2)
 
 	if(player_lose == body1)
 	{
+		
 		App->player->ball.body->SetLinearSpeed(0, 0);
 		App->player->ball.body->SetAngularSpeed(0);
-		App->player->ball.body->SetPosition(563, 582);
+		App->player->ball.body->SetPosition(450, 655);
 		lives--;
 
 		if(lives <= 0)

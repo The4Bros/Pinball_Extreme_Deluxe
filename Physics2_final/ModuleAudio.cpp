@@ -163,3 +163,13 @@ bool ModuleAudio::PlayFx(unsigned int id, int repeat)
 
 	return ret;
 }
+
+bool ModuleAudio::ChangeVolume(uint volume){
+	if (volume > 128){ volume = 128; }
+	
+
+	Mix_VolumeMusic(volume);
+
+	return true;
+
+}
