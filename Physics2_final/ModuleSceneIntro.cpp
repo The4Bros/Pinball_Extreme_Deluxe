@@ -280,15 +280,12 @@ bool ModuleSceneIntro::Start()
 
 
 	// VOLTORBS
-	voltorbs[0].texture = voltorb2;
 	voltorbs[0].body = App->physics->AddBody(232, 286, 42, b_static, 1.0f, 1.5f);
 	voltorbs[0].body->GetPosition(voltorbs[0].x, voltorbs[0].y);
 
-	voltorbs[1].texture = voltorb2;
 	voltorbs[1].body = App->physics->AddBody(178, 235, 42, b_static, 1.0f, 1.5f);
 	voltorbs[1].body->GetPosition(voltorbs[1].x, voltorbs[1].y);
 
-	voltorbs[2].texture = voltorb2;
 	voltorbs[2].body = App->physics->AddBody(247, 209, 42, b_static, 1.0f, 1.5f);
 	voltorbs[2].body->GetPosition(voltorbs[2].x, voltorbs[2].y);
 
@@ -356,10 +353,12 @@ update_status ModuleSceneIntro::Update()
 	// bouncers up
 	for (unsigned int i = 0; i < 3; i++)
 	{
+		volt[i].Update();
+
 		switch (voltorbs[i].Update())
 		{
-		case 0: break;
-		case 1: App->renderer->Blit(voltorbs[i].texture, voltorbs[i].x, voltorbs[i].y); break;
+		case 0: App->renderer->Blit(voltorb1, voltorbs[i].x + volt[i].x, voltorbs[i].y + volt[i].y); break;
+		case 1: App->renderer->Blit(voltorb2, voltorbs[i].x, voltorbs[i].y); break;
 		case 2: App->scene_intro->score += VOLTORB_SCORE; break;
 		default: break;
 		}
@@ -410,13 +409,19 @@ update_status ModuleSceneIntro::Update()
 					}
 				}
 			}
-			else
-			{
-				lights_up_animated = false;
-				lights_up[i].on = false;
-			}
 		}
 	}
+
+	if (lights_up_counter >= 2 * BLINK_MULTIPLIER)
+	{
+		for (unsigned int i = 0; i < 3; i++)
+		{
+			lights_up[i].on = false;
+		}
+
+		lights_up_animated = false;
+	}
+
 
 	// lights down
 	for (unsigned int i = 0; i < 4; i++)
@@ -451,12 +456,17 @@ update_status ModuleSceneIntro::Update()
 					}
 				}
 			}
-			else
-			{
-				lights_down_animated = false;
-				lights_down[i].on = false;
-			}
 		}
+	}
+
+	if (lights_down_counter >= 2 * BLINK_MULTIPLIER)
+	{
+		for (unsigned int i = 0; i < 4; i++)
+		{
+			lights_down[i].on = false;
+		}
+
+		lights_down_animated = false;
 	}
 
 	// check animation
@@ -577,7 +587,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* body1, PhysBody* body2)
 
 
 
-Bouncer::Bouncer() : body(NULL), texture(NULL), x(0), y(0)
+Bouncer::Bouncer() : body(NULL), texture(NULL), x(0), y(0), hit_timer(0)
 {}
 
 int Bouncer::Update()
@@ -585,10 +595,10 @@ int Bouncer::Update()
 	int ret = 0;
 	if (hit_timer > 0)
 	{
-		ret++;
-		if (!(SDL_TICKS_PASSED(SDL_GetTicks(), hit_timer) == false))
+		ret = 1;
+		if (SDL_TICKS_PASSED(SDL_GetTicks(), hit_timer))
 		{
-			ret++;
+			ret = 2;
 			hit_timer = 0;
 		}
 	}

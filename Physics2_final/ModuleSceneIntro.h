@@ -7,6 +7,8 @@
 #define DIGLET_SCORE 50
 #define LIGHT_SCORE 50
 
+#define VOLTORB_TICKER 75
+
 #define BOUNCER_TIME 200
 #define BLINK_MULTIPLIER 4
 #define LIGHT_RADIUS 6
@@ -19,7 +21,7 @@ public:
 	bool CheckCollision(PhysBody* body1);
 
 public:
-	Uint32 hit_timer;
+	Uint32 hit_timer = 0;
 	SDL_Texture* texture;
 	PhysBody* body;
 	int x, y;
@@ -27,23 +29,34 @@ public:
 
 struct VoltorbAnim
 {
-	VoltorbAnim() : x(0), y(0), counter(0)
+	VoltorbAnim() : x(6), y(6), counter(0)
 	{}
 
 	void Update()
 	{
-		counter = (counter == 3 ? 0 : counter++);
-
-		switch (counter)
+		if (SDL_TICKS_PASSED(SDL_GetTicks(), hit_timer))
 		{
-		case 0: x = 1; y = -1; break;
-		case 1: x = 1; y = 1; break;
-		case 2: x = -1; y = 1; break;
-		case 3: x = -1; y = -1; break;
-		default: break;
+			hit_timer = SDL_GetTicks() + VOLTORB_TICKER;
+
+			if (counter >= 2)
+				counter = 0;
+			else
+				counter++;
+
+			switch (counter)
+			{
+			case 0: x = 6; y = -6; break;
+			case 1: x = 6; y = 6; break;
+			case 2: x = -6; y = 6; break;
+				//case 3: x = -6; y = -6; break;
+			default: break;
+			}
+
+			LOG("%i", counter);
 		}
 	}
 
+	Uint32 hit_timer = 0;
 	int counter = 0;
 	bool hit = false;
 	int x, y;
@@ -114,19 +127,3 @@ public:
 	uint score = 0;
 	uint lives = 3;
 };
-
-/*
-// bouncers up
-for (unsigned int i = 0; i < 3; i++)
-{
-	volt[i].Update();
-
-	switch (voltorbs[i].Update())
-	{
-	case 0: App->renderer->Blit(voltorb1, voltorbs[i].x + volt[i].x, voltorbs[i].y + volt[i].y);
-	case 1: App->renderer->Blit(voltorb2, voltorbs[i].x, voltorbs[i].y); break;
-	case 2: App->scene_intro->score += VOLTORB_SCORE; break;
-	default: break;
-	}
-}
-*/
