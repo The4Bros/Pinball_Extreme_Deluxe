@@ -23,9 +23,18 @@ public:
 	PhysBody* background;
 
 	ItemList<Bouncer*> bouncers;
-	ItemList<Light*> lights;
+	ItemList<Light*> lights_up;
+	ItemList<Light*> lights_down;
 
+	SDL_Texture* voltorb1;
+	SDL_Texture* voltorb2;
+	SDL_Texture* bumper1;
+	SDL_Texture* bumper2;
+	SDL_Texture* diglet;
 	SDL_Texture* tex_light;
+
+	uint fx_bumper1;
+	uint fx_bumper2;
 	uint fx_light;
 
 	PhysBody* player_lose;
