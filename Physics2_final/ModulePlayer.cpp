@@ -19,7 +19,7 @@ bool ModulePlayer::Start()
 	flipper2.graphic = App->textures->Load("game/pinball/Flipper_der.png");
 	flipper1.fx = flipper2.fx = App->audio->LoadFx("game/pinball/flipper.wav");
 
-	spring.graphic = App->textures->Load("game/pinball/spring.png");
+	spring.graphic = App->textures->Load("game/pinball/Impulsar.png");
 	spring.fx = App->audio->LoadFx("game/pinball/spring2.wav");
 
 	ball.body = App->physics->AddBody(450, 655, 29, b_dynamic, 1.0f, 0.3f, true);/*___________*/
@@ -27,17 +27,15 @@ bool ModulePlayer::Start()
 	ball.body->listener = this;
 	
 	// Pivot 0, 0
-	int f1[20] = {
-		0, 14,
+	int f1[16] = {
+		3, 10,
+		11, 1,
+		53, 7,
+		66, 10,
+		65, 18,
+		26, 23,
 		6, 24,
-		19, 23,
-		36, 22,
-		62, 19,
-		65, 15,
-		63, 10,
-		49, 7,
-		11, 2,
-		0, 9
+		3, 16
 	};
 
 	flipper1.body = App->physics->AddBody({140, 686, 0, 0}, f1, 16, b_dynamic);/*___________*/
@@ -45,18 +43,15 @@ bool ModulePlayer::Start()
 	App->physics->CreateRevoluteJoint(flipper1.body, flipper1_wheel, 11, 14, 0, 0, 30, -30);
 
 	// Pivot 0, 0
-	int f2[22] = {
-		66, 15,
-		61, 24,
-		52, 25,
-		48, 22,
-		30, 23,
-		5, 20,
-		0, 13,
+	int f2[16] = {
+		65, 9,
+		55, 2,
 		16, 7,
-		29, 6,
-		55, 3,
-		65, 8
+		1, 14,
+		6, 19,
+		54, 23,
+		61, 22,
+		66, 14
 	};
 	
 	flipper2.body = App->physics->AddBody({225, 682, 0, 0}, f2, 16, b_dynamic);/*___________*/
