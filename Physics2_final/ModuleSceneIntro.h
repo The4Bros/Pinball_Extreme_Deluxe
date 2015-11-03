@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 
+
 #define VOLTORB_SCORE 50
 #define BUMPER_SCORE 50
 #define DIGLET_SCORE 50
@@ -21,6 +22,30 @@ public:
 	Uint32 hit_timer;
 	SDL_Texture* texture;
 	PhysBody* body;
+	int x, y;
+};
+
+struct VoltorbAnim
+{
+	VoltorbAnim() : x(0), y(0), counter(0)
+	{}
+
+	void Update()
+	{
+		counter = (counter == 3 ? 0 : counter++);
+
+		switch (counter)
+		{
+		case 0: x = 1; y = -1; break;
+		case 1: x = 1; y = 1; break;
+		case 2: x = -1; y = 1; break;
+		case 3: x = -1; y = -1; break;
+		default: break;
+		}
+	}
+
+	int counter = 0;
+	bool hit = false;
 	int x, y;
 };
 
@@ -54,7 +79,9 @@ public:
 	SDL_Texture* graphics;
 	PhysBody* background;
 
-	Bouncer voltorbs [3];
+	VoltorbAnim volt[3];
+
+	Bouncer voltorbs[3];
 	Bouncer bumpers[4];
 
 	Light lights_up[3];
@@ -88,6 +115,18 @@ public:
 	uint lives = 3;
 };
 
+/*
+// bouncers up
+for (unsigned int i = 0; i < 3; i++)
+{
+	volt[i].Update();
 
-
-
+	switch (voltorbs[i].Update())
+	{
+	case 0: App->renderer->Blit(voltorb1, voltorbs[i].x + volt[i].x, voltorbs[i].y + volt[i].y);
+	case 1: App->renderer->Blit(voltorb2, voltorbs[i].x, voltorbs[i].y); break;
+	case 2: App->scene_intro->score += VOLTORB_SCORE; break;
+	default: break;
+	}
+}
+*/
