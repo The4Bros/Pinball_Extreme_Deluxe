@@ -16,10 +16,7 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) :
 	tex_light(NULL),
 	lights_up_animated(false),
 	lights_up_counter(0),
-	lights_up_hit_timer(0),
-	lights_down_animated(false),
-	lights_down_counter(0),
-	lights_down_hit_timer(0)
+	lights_up_hit_timer(0)
 {}
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -49,7 +46,7 @@ bool ModuleSceneIntro::Start()
 	diglet1 = App->textures->Load("game/pinball/diglet_hit.png");
 	diglet2 = App->textures->Load("game/pinball/diglet_hit.png");
 
-	tex_light = App->textures->Load("game/pinball/sensor_tiny.png");
+	tex_light = App->textures->Load("game/pinball/sensor.png");
 
 	// FX's
 	fx_bumper1 = App->audio->LoadFx("game/pinball/bumper.wav");
@@ -309,6 +306,7 @@ bool ModuleSceneIntro::Start()
 	bumpers[2].body = App->physics->AddBody(77, 490, 30, b_static, 1.0f, 1.5f);
 	bumpers[2].body->GetPosition(bumpers[2].x, bumpers[2].y);
 	bumpers[2].body->listener = this;
+
 	bumpers[3].texture = diglet1;
 	bumpers[3].body = App->physics->AddBody(356, 490, 30, b_static, 1.0f, 1.5f);
 	bumpers[3].body->GetPosition(bumpers[3].x, bumpers[3].y);
@@ -408,7 +406,7 @@ update_status ModuleSceneIntro::Update()
 	}
 
 	// lights up
-	for (unsigned int i = 0; i < 3; i++)
+	for (unsigned int i = 0; i < 7; i++)
 	{
 		if (!lights_up_animated)
 		{
@@ -453,53 +451,6 @@ update_status ModuleSceneIntro::Update()
 		lights_up_animated = false;
 	}
 
-
-	// lights down
-	for (unsigned int i = 0; i < 4; i++)
-	{
-		if (!lights_down_animated)
-		{
-			if (lights_down[i].on)
-				App->renderer->Blit(tex_light, lights_down[i].x, lights_down[i].y); break;
-		}
-		else
-		{
-			if (lights_down_counter < 2 * BLINK_MULTIPLIER)
-			{
-				if (lights_down_counter % 2 == 0) // on
-				{
-					if (SDL_TICKS_PASSED(SDL_GetTicks(), lights_down_hit_timer) == false)
-					{
-						App->renderer->Blit(tex_light, lights_down[i].x, lights_down[i].y);
-					}
-					else
-					{
-						lights_down_hit_timer = SDL_GetTicks() + BOUNCER_TIME;
-						lights_down_counter++;
-					}
-				}
-				else //off
-				{
-					if (SDL_TICKS_PASSED(SDL_GetTicks(), lights_down_hit_timer))
-					{
-						lights_down_hit_timer = SDL_GetTicks() + BOUNCER_TIME;
-						lights_down_counter++;
-					}
-				}
-			}
-		}
-	}
-
-	if (lights_down_counter >= 2 * BLINK_MULTIPLIER)
-	{
-		for (unsigned int i = 0; i < 4; i++)
-		{
-			lights_down[i].on = false;
-		}
-
-		lights_down_animated = false;
-	}
-
 	// check animation
 	unsigned int size = 0;
 	for (unsigned int i = 0; i < 3; i++)
@@ -512,20 +463,6 @@ update_status ModuleSceneIntro::Update()
 	{
 		lights_up_hit_timer = SDL_GetTicks() + BOUNCER_TIME;
 		lights_up_counter = 0;
-	}
-
-
-	size = 0;
-	for (unsigned int i = 0; i < 4; i++)
-	{
-		if (lights_down[i].on)
-			size++;
-	}
-	lights_down_animated = (size == 4);
-	if (lights_down_animated)
-	{
-		lights_down_hit_timer = SDL_GetTicks() + BOUNCER_TIME;
-		lights_down_counter = 0;
 	}
 
 	// Update title with score
@@ -562,7 +499,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* body1, PhysBody* body2)
 	// lights up
 	if (!lights_up_animated)
 	{
-		for (unsigned int i = 0; i < 3; i++)
+		for (unsigned int i = 0; i < 7; i++)
 		{
 			if (lights_up[i].CheckCollision(body1))
 			{
@@ -571,24 +508,6 @@ void ModuleSceneIntro::OnCollision(PhysBody* body1, PhysBody* body2)
 					App->audio->PlayFx(fx_light);
 					App->scene_intro->score += LIGHT_SCORE;
 					lights_up[i].on = true;
-				}
-				return;
-			}
-		}
-	}
-
-	// lights down
-	if (!lights_down_animated)
-	{
-		for (unsigned int i = 0; i < 4; i++)
-		{
-			if (lights_down[i].CheckCollision(body1))
-			{
-				if (!lights_down[i].on)
-				{
-					App->audio->PlayFx(fx_light);
-					App->scene_intro->score += LIGHT_SCORE;
-					lights_down[i].on = true;
 				}
 				return;
 			}

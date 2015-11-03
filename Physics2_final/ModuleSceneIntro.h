@@ -97,16 +97,11 @@ public:
 	Bouncer voltorbs[3];
 	Bouncer bumpers[4];
 
-	Light lights_up[3];
-	Light lights_down[4];
+	Light lights_up[7];
 
 	bool lights_up_animated;
 	int lights_up_counter;
 	uint lights_up_hit_timer;
-
-	bool lights_down_animated;
-	int lights_down_counter;
-	uint lights_down_hit_timer;
 
 	SDL_Texture* voltorb1;
 	SDL_Texture* voltorb2;
