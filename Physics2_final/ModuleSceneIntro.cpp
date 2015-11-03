@@ -52,10 +52,10 @@ bool ModuleSceneIntro::Start()
 	tex_light = App->textures->Load("game/pinball/sensor_tiny.png");
 
 	// FX's
-	fx_bumper1 = App->audio->LoadFx("game/pinball/ding_short.wav");
-	fx_bumper2 = App->audio->LoadFx("game/pinball/ring.wav");
+	fx_bumper1 = App->audio->LoadFx("game/pinball/bumper.wav");
+	fx_bumper2 = App->audio->LoadFx("game/pinball/electrode.wav");
 
-	fx_light = App->audio->LoadFx("game/pinball/bonus2.wav");
+	fx_light = App->audio->LoadFx("game/pinball/Sensor.wav");
 
 	player_lose_fx = App->audio->LoadFx("game/pinball/Game_Over.wav");
 	player_restart_fx = App->audio->LoadFx("game/pinball/restart.wav");
@@ -281,13 +281,13 @@ bool ModuleSceneIntro::Start()
 
 
 	// VOLTORBS
-	voltorbs[0].body = App->physics->AddBody(232, 286, 40, b_static, 1.0f, 1.5f);
+	voltorbs[0].body = App->physics->AddBody(232, 286, 40, b_static, 1.0f, 1.3f);
 	voltorbs[0].body->GetPosition(voltorbs[0].x, voltorbs[0].y);
 
-	voltorbs[1].body = App->physics->AddBody(178, 235, 40, b_static, 1.0f, 1.5f);
+	voltorbs[1].body = App->physics->AddBody(178, 235, 40, b_static, 1.0f, 1.3f);
 	voltorbs[1].body->GetPosition(voltorbs[1].x, voltorbs[1].y);
 
-	voltorbs[2].body = App->physics->AddBody(247, 209, 40, b_static, 1.0f, 1.5f);
+	voltorbs[2].body = App->physics->AddBody(247, 209, 40, b_static, 1.0f, 1.3f);
 	voltorbs[2].body->GetPosition(voltorbs[2].x, voltorbs[2].y);
 
 
