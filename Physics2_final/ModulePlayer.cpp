@@ -14,16 +14,16 @@ bool ModulePlayer::Start()
 {
 	LOG("Loading player");
 
-	ball.graphic = App->textures->Load("pinball/ball_small.png");
-	flipper1.graphic = App->textures->Load("pinball/Flipper_izq.png");
-	flipper2.graphic = App->textures->Load("pinball/Flipper_der.png");
-	flipper1.fx = flipper2.fx = App->audio->LoadFx("pinball/flipper.wav");
+	ball.graphic = App->textures->Load("game/pinball/ball_small.png");
+	flipper1.graphic = App->textures->Load("game/pinball/Flipper_izq.png");
+	flipper2.graphic = App->textures->Load("game/pinball/Flipper_der.png");
+	flipper1.fx = flipper2.fx = App->audio->LoadFx("game/pinball/flipper.wav");
 
-	spring.graphic = App->textures->Load("pinball/spring.png");
-	spring.fx = App->audio->LoadFx("pinball/spring2.wav");
+	spring.graphic = App->textures->Load("game/pinball/spring.png");
+	spring.fx = App->audio->LoadFx("game/pinball/spring2.wav");
 
 	ball.body = App->physics->AddBody(450, 655, 29, b_dynamic, 1.0f, 0.3f, true);/*___________*/
-	ball.fx = App->audio->LoadFx("pinball/ball_bounce.wav");
+	ball.fx = App->audio->LoadFx("game/pinball/ball_bounce.wav");
 	ball.body->listener = this;
 	
 	// Pivot 0, 0

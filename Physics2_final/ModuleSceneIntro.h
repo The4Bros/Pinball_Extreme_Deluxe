@@ -1,9 +1,41 @@
 #pragma once
 #include "Module.h"
-#include "Animation.h"
-#include "p2DynArray.h"
-#include "Globals.h"
-#include "SceneItems.h"
+
+#define VOLTORB_SCORE 50
+#define BUMPER_SCORE 50
+#define DIGLET_SCORE 50
+#define LIGHT_SCORE 50
+
+#define BOUNCER_TIME 200
+#define BLINK_MULTIPLIER 4
+#define LIGHT_RADIUS 6
+
+struct Bouncer
+{
+public:
+	Bouncer();
+	int Update();
+	bool CheckCollision(PhysBody* body1);
+
+public:
+	Uint32 hit_timer;
+	SDL_Texture* texture;
+	PhysBody* body;
+	int x, y;
+};
+
+struct Light
+{
+public:
+	Light();
+	int Update();
+	bool CheckCollision(PhysBody* body1);
+
+public:
+	bool on;
+	PhysBody* body;
+	int x, y;
+};
 
 class ModuleSceneIntro : public Module
 {
@@ -22,15 +54,26 @@ public:
 	SDL_Texture* graphics;
 	PhysBody* background;
 
-	ItemList<Bouncer*> bouncers;
-	ItemList<Light*> lights_up;
-	ItemList<Light*> lights_down;
+	Bouncer voltorbs [3];
+	Bouncer bumpers[4];
+
+	Light lights_up[3];
+	Light lights_down[4];
+
+	bool lights_up_animated;
+	int lights_up_counter;
+	uint lights_up_hit_timer;
+
+	bool lights_down_animated;
+	int lights_down_counter;
+	uint lights_down_hit_timer;
 
 	SDL_Texture* voltorb1;
 	SDL_Texture* voltorb2;
 	SDL_Texture* bumper1;
 	SDL_Texture* bumper2;
-	SDL_Texture* diglet;
+	SDL_Texture* diglet1;
+	SDL_Texture* diglet2;
 	SDL_Texture* tex_light;
 
 	uint fx_bumper1;
@@ -44,3 +87,7 @@ public:
 	uint score = 0;
 	uint lives = 3;
 };
+
+
+
+

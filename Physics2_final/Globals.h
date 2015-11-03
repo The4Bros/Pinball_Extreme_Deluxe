@@ -30,3 +30,8 @@ enum update_status
 #define WIN_FULLSCREEN_DESKTOP false
 #define VSYNC true
 #define TITLE "2D Physics Playground"
+
+
+#define BOUNCER_TIME 200
+#define BLINK_MULTIPLIER 4
+#define LIGHT_RADIUS 6

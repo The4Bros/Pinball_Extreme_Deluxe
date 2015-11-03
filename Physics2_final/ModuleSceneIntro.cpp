@@ -4,18 +4,23 @@
 
 
 
-ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
-{
-	graphics = NULL;
-	voltorb1 = NULL;
-	voltorb2 = NULL;
-	bumper1 = NULL;
-	bumper2 = NULL;
-	diglet = NULL;
-	tex_light = NULL;
-
-	bouncers.app = lights_up.app = lights_down.app = app;
-}
+ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) :
+	Module(app, start_enabled),
+	graphics(NULL),
+	voltorb1(NULL),
+	voltorb2(NULL),
+	bumper1(NULL),
+	bumper2(NULL),
+	diglet1(NULL),
+	diglet2(NULL),
+	tex_light(NULL),
+	lights_up_animated(false),
+	lights_up_counter(0),
+	lights_up_hit_timer(0),
+	lights_down_animated(false),
+	lights_down_counter(0),
+	lights_down_hit_timer(0)
+{}
 
 ModuleSceneIntro::~ModuleSceneIntro()
 {}
@@ -32,26 +37,27 @@ bool ModuleSceneIntro::Start()
 	//App->audio->PlayMusic("pinball/Rhinoceros2.ogg", 0.0f);
 
 	// Graphics
-	graphics = App->textures->Load("pinball/field_empty_b.png");
+	graphics = App->textures->Load("game/pinball/field_empty_b.png");
 
-	voltorb1 = App->textures->Load("pinball/electrode.png");
-	voltorb2 = App->textures->Load("pinball/electrode_hit.png");
+	voltorb1 = App->textures->Load("game/pinball/electrode.png");
+	voltorb2 = App->textures->Load("game/pinball/electrode_hit.png");
 
-	bumper1 = App->textures->Load("pinball/Bumper_izq.png");
-	bumper2 = App->textures->Load("pinball/Bumper_der.png");
+	bumper1 = App->textures->Load("game/pinball/Bumper_izq.png");
+	bumper2 = App->textures->Load("game/pinball/Bumper_der.png");
 
-	diglet = App->textures->Load("pinball/diglet_hit.png");
+	diglet1 = App->textures->Load("game/pinball/diglet_hit.png");
+	diglet2 = App->textures->Load("game/pinball/diglet_hit.png");
 
-	tex_light = App->textures->Load("pinball/sensor_tiny.png");
+	tex_light = App->textures->Load("game/pinball/sensor_tiny.png");
 
 	// FX's
-	fx_bumper1 = App->audio->LoadFx("pinball/ding_short.wav");
-	fx_bumper2 = App->audio->LoadFx("pinball/ring.wav");
+	fx_bumper1 = App->audio->LoadFx("game/pinball/ding_short.wav");
+	fx_bumper2 = App->audio->LoadFx("game/pinball/ring.wav");
 
-	fx_light = App->audio->LoadFx("pinball/bonus2.wav");
+	fx_light = App->audio->LoadFx("game/pinball/bonus2.wav");
 
-	player_lose_fx = App->audio->LoadFx("pinball/long_bonus.wav");
-	player_restart_fx = App->audio->LoadFx("pinball/long_bonus2.wav");
+	player_lose_fx = App->audio->LoadFx("game/pinball/long_bonus.wav");
+	player_restart_fx = App->audio->LoadFx("game/pinball/long_bonus2.wav");
 
 	// Pivot 0, 0
 	int pinball[114] = {
@@ -255,22 +261,7 @@ bool ModuleSceneIntro::Start()
 	// Small bouncy ball bottom center under flippers
 	App->physics->AddBody(216, 745,5, b_static, 1.0f, 0.8f);
 
-	// Two big bouncers on top
-	PhysBody* tmp_body = App->physics->AddBody(232, 286, 42, b_static, 1.0f, 1.5f);
-	tmp_body->listener = this;
-
-	Bouncer* tmp_bouncer = new Bouncer(tmp_body, voltorb1, // fx, score, x, y, printingX, printingY)
-
-
-	bouncers.AddItem()
-
-
-	voltorb_bouncer2.body = App->physics->AddBody(178, 235, 42, b_static, 1.0f, 1.5f);
-
-	voltorb_bouncer3.body = App->physics->AddBody(247, 209, 42, b_static, 1.0f, 1.5f);
-
 	// Bouncers on the sides
-	
 	// Pivot 0, 0
 	int b1[8] = {
 		99, 568,
@@ -278,9 +269,6 @@ bool ModuleSceneIntro::Start()
 		135, 616,
 		108, 563
 	};
-
-	bouncer1.body = App->physics->AddBody({ 0, 0, 517, 751 }, b1, 8, b_static, 1.0f, 1.0f, false);
-	bouncer1.body->listener = this;
 
 	// Pivot 0, 0
 	int b2[8] = {
@@ -290,8 +278,30 @@ bool ModuleSceneIntro::Start()
 		317, 562
 	};
 
-	bouncer2.body = App->physics->AddBody({ 0, 0, 517, 751 }, b2, 8, b_static, 1.0f, 1.0f, false);
-	bouncer2.body->listener = this;
+
+	// VOLTORBS
+	voltorbs[0].texture = voltorb2;
+	voltorbs[0].body = App->physics->AddBody(232, 286, 42, b_static, 1.0f, 1.5f);
+	voltorbs[0].body->GetPosition(voltorbs[0].x, voltorbs[0].y);
+
+
+	// BOUNCERS
+
+
+
+
+	
+
+	// LIGHTS UP
+	int light_radius = 6;
+
+	lights_up[0].on = false;
+	lights_up[0].body = App->physics->AddBody(0 + light_radius, 0 + light_radius, light_radius * 2, b_static, 1.0f, 1.0f, false, true);
+	lights_up[0].body->GetPosition(lights_up[0].x, lights_up[0].y);
+
+
+	// LIGHTS DOWN
+	
 	
 	// Sensor for player losing (under flippers)
 	player_lose = App->physics->AddBody({245, 1080, 200, 50}, b_static, 1.0f, 0.0f, false, true);
@@ -306,11 +316,13 @@ bool ModuleSceneIntro::CleanUp()
 	LOG("Unloading Intro scene");
 
 	App->textures->Unload(graphics);
+	App->textures->Unload(voltorb1);
+	App->textures->Unload(voltorb2);
+	App->textures->Unload(bumper1);
+	App->textures->Unload(bumper2);
+	App->textures->Unload(diglet1);
+	App->textures->Unload(diglet2);
 	App->textures->Unload(tex_light);
-
-	delete &bouncers;
-	delete &lights_up;
-	delete &lights_down;
 
 	return true;
 }
@@ -320,12 +332,139 @@ update_status ModuleSceneIntro::Update()
 {
 	App->renderer->Blit(graphics, 0, 0);
 
-	bouncers.Update();
-	lights_up.Update();
-	lights_down.Update();
+	// bouncers up
+	for (unsigned int i = 0; i < 3; i++)
+	{
+		switch (voltorbs[i].Update())
+		{
+		case 0: break;
+		case 1: App->renderer->Blit(voltorbs[i].texture, voltorbs[i].x, voltorbs[i].y); break;
+		case 2: App->scene_intro->score += VOLTORB_SCORE; break;
+		default: break;
+		}
+	}
 
-	lights_up.CheckAnimation();
-	lights_down.CheckAnimation();
+	// bouncers down
+	for (unsigned int i = 0; i < 4; i++)
+	{
+		switch (bumpers[i].Update())
+		{
+		case 0: break;
+		case 1: App->renderer->Blit(bumpers[i].texture, bumpers[i].x, bumpers[i].y); break;
+		case 2: App->scene_intro->score += BUMPER_SCORE; break;
+		default: break;
+		}
+	}
+
+	// lights up
+	for (unsigned int i = 0; i < 3; i++)
+	{
+		if (!lights_up_animated)
+		{
+			if (lights_up[i].on)
+				App->renderer->Blit(tex_light, lights_up[i].x, lights_up[i].y); break;
+		}
+		else
+		{
+			if (lights_up_counter < 2 * BLINK_MULTIPLIER)
+			{
+				if (lights_up_counter % 2 == 0) // on
+				{
+					if (SDL_TICKS_PASSED(SDL_GetTicks(), lights_up_hit_timer) == false)
+					{
+						App->renderer->Blit(tex_light, lights_up[i].x, lights_up[i].y);
+					}
+					else
+					{
+						lights_up_hit_timer = SDL_GetTicks() + BOUNCER_TIME;
+						lights_up_counter++;
+					}
+				}
+				else //off
+				{
+					if (SDL_TICKS_PASSED(SDL_GetTicks(), lights_up_hit_timer))
+					{
+						lights_up_hit_timer = SDL_GetTicks() + BOUNCER_TIME;
+						lights_up_counter++;
+					}
+				}
+			}
+			else
+			{
+				lights_up_animated = false;
+				lights_up[i].on = false;
+			}
+		}
+	}
+
+	// lights down
+	for (unsigned int i = 0; i < 4; i++)
+	{
+		if (!lights_down_animated)
+		{
+			if (lights_down[i].on)
+				App->renderer->Blit(tex_light, lights_down[i].x, lights_down[i].y); break;
+		}
+		else
+		{
+			if (lights_down_counter < 2 * BLINK_MULTIPLIER)
+			{
+				if (lights_down_counter % 2 == 0) // on
+				{
+					if (SDL_TICKS_PASSED(SDL_GetTicks(), lights_down_hit_timer) == false)
+					{
+						App->renderer->Blit(tex_light, lights_down[i].x, lights_down[i].y);
+					}
+					else
+					{
+						lights_down_hit_timer = SDL_GetTicks() + BOUNCER_TIME;
+						lights_down_counter++;
+					}
+				}
+				else //off
+				{
+					if (SDL_TICKS_PASSED(SDL_GetTicks(), lights_down_hit_timer))
+					{
+						lights_down_hit_timer = SDL_GetTicks() + BOUNCER_TIME;
+						lights_down_counter++;
+					}
+				}
+			}
+			else
+			{
+				lights_down_animated = false;
+				lights_down[i].on = false;
+			}
+		}
+	}
+
+	// check animation
+	unsigned int size = 0;
+	for (unsigned int i = 0; i < 3; i++)
+	{
+		if (lights_up[i].on)
+			size++;
+	}
+	lights_up_animated = (size == 3);
+	if (lights_up_animated)
+	{
+		lights_up_hit_timer = SDL_GetTicks() + BOUNCER_TIME;
+		lights_up_counter = 0;
+	}
+
+
+	size = 0;
+	for (unsigned int i = 0; i < 4; i++)
+	{
+		if (lights_down[i].on)
+			size++;
+	}
+	lights_down_animated = (size == 4);
+	if (lights_down_animated)
+	{
+		lights_down_hit_timer = SDL_GetTicks() + BOUNCER_TIME;
+		lights_down_counter = 0;
+	}
 
 	// Update title with score
 	char title[50];
@@ -338,9 +477,59 @@ update_status ModuleSceneIntro::Update()
 
 void ModuleSceneIntro::OnCollision(PhysBody* body1, PhysBody* body2)
 {
-	bouncers.CheckCollision(body1);
-	lights_up.CheckCollision(body1);
-	lights_down.CheckCollision(body1);
+
+	for (unsigned int i = 0; i < 3; i++)
+	{
+		if (voltorbs[i].body == body1)
+		{
+			voltorbs[i].hit_timer = SDL_GetTicks() + BOUNCER_TIME;
+		}
+	}
+	
+	for (unsigned int i = 0; i < 4; i++)
+	{
+		if (bumpers[i].body == body1)
+		{
+			bumpers[i].hit_timer = SDL_GetTicks() + BOUNCER_TIME;
+		}
+	}
+
+	// lights up
+	if (!lights_up_animated)
+	{
+		for (unsigned int i = 0; i < 3; i++)
+		{
+			if (lights_up[i].CheckCollision(body1))
+			{
+				if (!lights_up[i].on)
+				{
+					App->audio->PlayFx(fx_light);
+					App->scene_intro->score += LIGHT_SCORE;
+					lights_up[i].on = true;
+				}
+				return;
+			}
+		}
+	}
+
+	// lights down
+	if (!lights_down_animated)
+	{
+		for (unsigned int i = 0; i < 4; i++)
+		{
+			if (lights_down[i].CheckCollision(body1))
+			{
+				if (!lights_down[i].on)
+				{
+					App->audio->PlayFx(fx_light);
+					App->scene_intro->score += LIGHT_SCORE;
+					lights_down[i].on = true;
+				}
+				return;
+			}
+		}
+	}
+
 
 	if(player_lose == body1)
 	{
@@ -365,11 +554,43 @@ void ModuleSceneIntro::OnCollision(PhysBody* body1, PhysBody* body2)
 	}
 }
 
-Light::Light(ModuleSceneIntro* scene, int x, int y) :x(x), y(y)
-{
-	int radius = 6;
 
-	body = scene->App->physics->AddBody(x + radius, y + radius, radius * 2, b_static, 1.0f, 1.0f, false, true);
-	body->listener = scene;
-	on = false;
+
+Bouncer::Bouncer() : body(NULL), texture(NULL), x(0), y(0)
+{}
+
+int Bouncer::Update()
+{
+	int ret = 0;
+	if (hit_timer > 0)
+	{
+		ret++;
+		if (!(SDL_TICKS_PASSED(SDL_GetTicks(), hit_timer) == false))
+		{
+			ret++;
+			hit_timer = 0;
+		}
+	}
+	return ret;
+}
+
+
+bool Bouncer::CheckCollision(PhysBody* body1)
+{
+	bool ret = (body == body1);
+	if (ret) hit_timer = SDL_GetTicks() + BOUNCER_TIME;
+	return ret;
+}
+
+Light::Light() : on(false), body(NULL), x(0), y(0)
+{}
+
+int Light::Update()
+{
+	return (on ? 1 : 0);
+}
+
+bool Light::CheckCollision(PhysBody* body1)
+{
+	return (body == body1);
 }

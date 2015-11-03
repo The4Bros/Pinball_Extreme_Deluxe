@@ -1,0 +1,26 @@
+#pragma once
+#include "Globals.h"
+#include "ModuleSceneIntro.h"
+
+class Bouncer
+{
+public:
+	Bouncer();
+	Bouncer(ModuleSceneIntro *scene, int x, int y, int d, SDL_Texture* texture, uint fx, uint score_bonus);
+	Bouncer(ModuleSceneIntro* scene, const SDL_Rect &rect, int *points, uint count, SDL_Texture* texture, uint fx, uint score_bonus);
+
+	int Update();
+	bool CheckCollision(PhysBody* body1);
+
+	int GetPrinting_X() { return printing_x; }
+	int GetPrinting_Y() { return printing_y; }
+
+public:
+	PhysBody* body;
+	SDL_Texture* texture;
+	uint fx;
+	uint score_bonus;
+	int x, y;
+	int printing_x, printing_y;
+	Uint32 hit_timer;
+};

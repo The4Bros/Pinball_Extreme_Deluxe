@@ -1,0 +1,32 @@
+#pragma once
+#include "ModuleSceneIntro.h"
+
+class Light
+{
+public:
+	Light();
+	Light(PhysBody* body, SDL_Texture* texture, uint fx, uint score_bonus, bool on);
+	Light(ModuleSceneIntro* scene, int x, int y, int radius, SDL_Texture* texture, uint fx, uint score_bonus);
+
+	int Update();
+	bool CheckCollision(PhysBody* body1);
+
+	int GetPrinting_X() { return x; }
+	int GetPrinting_Y() { return y; }
+
+
+public:
+	PhysBody* body;
+	SDL_Texture* texture;
+	uint fx;
+	uint score_bonus;
+	int x, y;
+	Uint32 hit_timer;
+
+	bool on;
+};
+
+
+
+
+
