@@ -283,32 +283,36 @@ bool ModuleSceneIntro::Start()
 	// VOLTORBS
 	voltorbs[0].body = App->physics->AddBody(232, 286, 40, b_static, 1.0f, 1.3f);
 	voltorbs[0].body->GetPosition(voltorbs[0].x, voltorbs[0].y);
+	voltorbs[0].body->listener = this;
 
 	voltorbs[1].body = App->physics->AddBody(178, 235, 40, b_static, 1.0f, 1.3f);
 	voltorbs[1].body->GetPosition(voltorbs[1].x, voltorbs[1].y);
+	voltorbs[1].body->listener = this;
 
 	voltorbs[2].body = App->physics->AddBody(247, 209, 40, b_static, 1.0f, 1.3f);
 	voltorbs[2].body->GetPosition(voltorbs[2].x, voltorbs[2].y);
-
+	voltorbs[2].body->listener = this;
 
 	// BOUNCERS
 
 	bumpers[0].texture = bumper1;
-	bumpers[0].body = App->physics->AddBody({ 0, 0, 517, 751 }, b1, 8, b_static, 1.0f, 1.0f, false);
+	bumpers[0].body = App->physics->AddBody({ 0, 0, 517, 751 }, b1, 8, b_static, 1.0f, 1.0f);
 	bumpers[0].body->GetPosition(bumpers[0].x, bumpers[0].y);
+	bumpers[0].body->listener = this;
 
 	bumpers[1].texture = bumper2;
-	bumpers[1].body = App->physics->AddBody({ 0, 0, 517, 751 }, b2, 8, b_static, 1.0f, 1.0f, false);
+	bumpers[1].body = App->physics->AddBody({ 0, 0, 517, 751 }, b2, 8, b_static, 1.0f, 1.0f);
 	bumpers[1].body->GetPosition(bumpers[1].x, bumpers[1].y);
+	bumpers[1].body->listener = this;
 
 	bumpers[2].texture = diglet1;
 	bumpers[2].body = App->physics->AddBody(77, 490, 30, b_static, 1.0f, 1.5f);
 	bumpers[2].body->GetPosition(bumpers[2].x, bumpers[2].y);
-
+	bumpers[2].body->listener = this;
 	bumpers[3].texture = diglet1;
 	bumpers[3].body = App->physics->AddBody(356, 490, 30, b_static, 1.0f, 1.5f);
 	bumpers[3].body->GetPosition(bumpers[3].x, bumpers[3].y);
-
+	bumpers[3].body->listener = this;
 	
 
 	// LIGHTS UP
@@ -342,7 +346,7 @@ bool ModuleSceneIntro::Start()
 	lights_up[6].body = App->physics->AddBody(270 + light_radius, 137 + light_radius, light_radius * 2, b_static, 1.0f, 1.0f, false, true);
 	lights_up[6].body->GetPosition(lights_up[6].x, lights_up[6].y);
 
-
+	
 
 
 	// LIGHTS DOWN
@@ -541,6 +545,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* body1, PhysBody* body2)
 		if (voltorbs[i].body == body1)
 		{
 			voltorbs[i].hit_timer = SDL_GetTicks() + BOUNCER_TIME;
+			App->audio->PlayFx(fx_bumper1);
 		}
 	}
 	
@@ -549,6 +554,8 @@ void ModuleSceneIntro::OnCollision(PhysBody* body1, PhysBody* body2)
 		if (bumpers[i].body == body1)
 		{
 			bumpers[i].hit_timer = SDL_GetTicks() + BOUNCER_TIME;
+			App->renderer->Blit(bumpers[i].texture, bumpers[i].x, bumpers[i].y);
+			App->audio->PlayFx(fx_bumper1);
 		}
 	}
 
