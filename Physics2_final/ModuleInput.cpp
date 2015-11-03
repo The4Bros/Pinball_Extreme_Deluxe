@@ -60,6 +60,16 @@ update_status ModuleInput::PreUpdate()
 	if(keyboard[SDL_SCANCODE_ESCAPE] == KEY_UP)
 		return UPDATE_STOP;
 
+	SDL_PollEvent(&event);
+	mouse_down = false;
+	switch (event.type)
+	{
+	case SDL_QUIT:
+		return UPDATE_STOP;
+	case SDL_MOUSEBUTTONDOWN:
+		mouse_down = true;
+	}
+
 	SDL_GetMouseState(&mouse_x, &mouse_y);
 	mouse_x /= SCREEN_SIZE;
 	mouse_y /= SCREEN_SIZE;

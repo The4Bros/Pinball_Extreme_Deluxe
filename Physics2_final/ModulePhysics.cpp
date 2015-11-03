@@ -389,7 +389,7 @@ void ModulePhysics::CreateRevoluteJoint(PhysBody* body_1, PhysBody* body_2, int 
 	world->CreateJoint(&def);
 }
 
-void ModulePhysics::CreateLineJoint(PhysBody* body_1, PhysBody* body_2, int x_pivot_1, int y_pivot_1, int x_pivot_2, int y_pivot_2, float frequency, float damping)
+b2Joint* ModulePhysics::CreateLineJoint(PhysBody* body_1, PhysBody* body_2, int x_pivot_1, int y_pivot_1, int x_pivot_2, int y_pivot_2, float frequency, float damping)
 {
 	b2DistanceJointDef def;
 
@@ -402,7 +402,7 @@ void ModulePhysics::CreateLineJoint(PhysBody* body_1, PhysBody* body_2, int x_pi
 	def.dampingRatio = damping; // 0 ... 1
 	def.frequencyHz = frequency; // < 30.0f
 
-	world->CreateJoint(&def);
+	return world->CreateJoint(&def);
 }
 
 void ModulePhysics::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)

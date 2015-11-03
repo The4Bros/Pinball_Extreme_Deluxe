@@ -36,8 +36,15 @@ public:
 		return mouse_y;
 	}
 
+	bool GetMouseDown() const
+	{
+		return mouse_down;
+	}
+
 private:
 	KEY_STATE* keyboard;
+	SDL_Event event;
+	bool mouse_down;
 	int mouse_x;
 	int mouse_y;
 };

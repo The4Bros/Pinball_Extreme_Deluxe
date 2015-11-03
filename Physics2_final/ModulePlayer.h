@@ -5,6 +5,7 @@
 #include "p2Point.h"
 
 class PhysBody;
+class b2Joint;
 
 struct Object
 {
@@ -36,6 +37,9 @@ public:
 	PhysBody* flipper1_wheel;
 	PhysBody* flipper2_wheel;
 	PhysBody* spring_wheel;
+
+	PhysBody* debug_wheel;
+	b2Joint* debug_joint;
 
 	PhysBody* sensor1;
 };

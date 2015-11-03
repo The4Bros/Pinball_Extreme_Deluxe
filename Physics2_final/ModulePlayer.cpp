@@ -3,7 +3,7 @@
 #include "ModulePlayer.h"
 #include "PhysBody.h"
 
-ModulePlayer::ModulePlayer(Application* app, bool start_enabled) : Module(app, start_enabled)
+ModulePlayer::ModulePlayer(Application* app, bool start_enabled) : Module(app, start_enabled), debug_joint(NULL)
 {}
 
 ModulePlayer::~ModulePlayer()
@@ -62,6 +62,9 @@ bool ModulePlayer::Start()
 	spring.body = App->physics->AddBody({435, 710,37, 11}, b_dynamic);/*___________*/
 	spring_wheel = App->physics->AddBody(480, 700, 10, b_static);
 	App->physics->CreateLineJoint(spring.body, spring_wheel, 0, 0, 0, 0, 20.0f, 1.0f);
+
+	debug_wheel = App->physics->AddBody(0, 0, 5, b_static);
+	debug_joint = NULL;
 	
 	return true;
 }
@@ -122,11 +125,42 @@ update_status ModulePlayer::Update()
 		App->audio->PlayFx(spring.fx);
 	}
 
-	int x, y;
-
-	ball.body->GetPosition(x, y);
-	App->renderer->Blit(ball.graphic, x, y, NULL, 1.0f);//, ball.body->GetAngle());
 	
+
+	
+	/*No conseguimos que el joint deje de estar en la escena
+
+	if (App->physics->Debugging() && App->input->GetMouseDown())
+	{
+		if (debug_joint == NULL)
+		{
+			debug_joint = App->physics->CreateLineJoint(ball.body, debug_wheel, 6, 6, 0, 0, 20.0f, 1.0f);
+		}
+		debug_wheel->SetPosition(App->input->GetMouseX(), App->input->GetMouseY());
+	}
+	else
+	{
+		debug_wheel->SetPosition(0, 0);
+
+		if (debug_joint != NULL)
+		{
+			debug_joint->Destroy(debug_join, NULL);
+			debug_joint = NULL;
+		}
+	}*/
+
+
+
+	if (App->physics->Debugging() && App->input->GetMouseDown())
+	{
+		ball.body->SetPosition(App->input->GetMouseX(), App->input->GetMouseY());
+	}
+
+	int x, y;
+	ball.body->GetPosition(x, y);
+	App->renderer->Blit(ball.graphic, x, y, NULL, 1.0f, ball.body->GetAngle());
+
+
 	flipper1.body->GetPosition(x, y);
 	App->renderer->Blit(flipper1.graphic, x , y, NULL, 1.0f, flipper1.body->GetAngle(), 0, 0);
 
